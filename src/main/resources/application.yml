@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: hadoop
+server:
+  port: 9000
+
+
+hdfs:
+  path: hdfs://192.168.187.128:9000
+  username: root
