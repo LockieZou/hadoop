@@ -1,5 +1,6 @@
 package com.sunvalley.hadoop.util;
 
+import com.google.common.io.CharStreams;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
@@ -12,6 +13,7 @@ import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.Map;
  * @date: 2018-11-28 13:59
  */
 @Component
-public class HadoopUtil {
+public class HdfsUtil {
     @Value("${hdfs.path}")
     private String path;
     @Value("${hdfs.username}")
@@ -64,6 +66,9 @@ public class HadoopUtil {
         if (StringUtils.isEmpty(path)) {
             return false;
         }
+        if (existFile(path)) {
+            return true;
+        }
         FileSystem fs = getFileSystem();
         // 目标路径
         Path srcPath = new Path(path);
@@ -80,6 +85,9 @@ public class HadoopUtil {
      */
     public static List<Map<String, Object>> readPathInfo(String path) throws Exception {
         if (StringUtils.isEmpty(path)) {
+            return null;
+        }
+        if (!existFile(path)) {
             return null;
         }
         FileSystem fs = getFileSystem();
@@ -131,6 +139,9 @@ public class HadoopUtil {
         if (StringUtils.isEmpty(path)) {
             return null;
         }
+        if (!existFile(path)) {
+            return null;
+        }
         FileSystem fs = getFileSystem();
         // 目标路径
         Path srcPath = new Path(path);
@@ -161,6 +172,10 @@ public class HadoopUtil {
         if (StringUtils.isEmpty(path)) {
             return null;
         }
+        if (!existFile(path)) {
+            return null;
+        }
+
         FileSystem fs = getFileSystem();
         // 目标路径
         Path srcPath = new Path(path);
@@ -209,6 +224,9 @@ public class HadoopUtil {
      */
     public static boolean deleteFile(String path) throws Exception {
         if (StringUtils.isEmpty(path)) {
+            return false;
+        }
+        if (!existFile(path)) {
             return false;
         }
         FileSystem fs = getFileSystem();
@@ -304,6 +322,67 @@ public class HadoopUtil {
             outputStream.close();
             fs.close();
         }
+    }
+
+    /**
+     * 打开HDFS上的文件并返回byte数组
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public static byte[] openFileToBytes(String path) throws Exception {
+        if (StringUtils.isEmpty(path)) {
+            return null;
+        }
+        if (!existFile(path)) {
+            return null;
+        }
+        FileSystem fs = getFileSystem();
+        // 目标路径
+        Path srcPath = new Path(path);
+        try {
+            FSDataInputStream inputStream = fs.open(srcPath);
+            return IOUtils.readFullyToByteArray(inputStream);
+        } finally {
+            fs.close();
+        }
+    }
+
+    /**
+     * 打开HDFS上的文件并返回java对象
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public static <T extends Object> T openFileToObject(String path, Class<T> clazz) throws Exception {
+        if (StringUtils.isEmpty(path)) {
+            return null;
+        }
+        if (!existFile(path)) {
+            return null;
+        }
+        String jsonStr = readFile(path);
+        return JsonUtil.fromObject(jsonStr, clazz);
+    }
+
+    /**
+     * 获取某个文件在HDFS的集群位置
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public static BlockLocation[] getFileBlockLocations(String path) throws Exception {
+        if (StringUtils.isEmpty(path)) {
+            return null;
+        }
+        if (!existFile(path)) {
+            return null;
+        }
+        FileSystem fs = getFileSystem();
+        // 目标路径
+        Path srcPath = new Path(path);
+        FileStatus fileStatus = fs.getFileStatus(srcPath);
+        return fs.getFileBlockLocations(fileStatus, 0, fileStatus.getLen());
     }
 
 

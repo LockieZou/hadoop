@@ -1,4 +1,4 @@
-package com.sunvalley.hadoop.config;
+package com.sunvalley.hadoop.hdfs.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @date: 2018-11-28 13:50
  */
 @Configuration
-public class HadoopConfig {
+public class HdfsConfig {
     @Value("${hdfs.path}")
     private String path;
 

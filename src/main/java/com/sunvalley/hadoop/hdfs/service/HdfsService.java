@@ -1,4 +1,4 @@
-package com.sunvalley.hadoop.service;
+package com.sunvalley.hadoop.hdfs.service;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
  * @date: 2018-11-28 13:54
  */
 @Service
-public class HadoopService {
+public class HdfsService {
 } 
 
