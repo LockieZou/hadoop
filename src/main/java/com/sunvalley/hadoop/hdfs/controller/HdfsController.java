@@ -1,6 +1,6 @@
 package com.sunvalley.hadoop.hdfs.controller;
 
-import com.sunvalley.hadoop.VO.BaseReturnVO;
+import com.sunvalley.hadoop.vo.BaseReturnVO;
 import com.sunvalley.hadoop.hdfs.model.User;
 import com.sunvalley.hadoop.util.HdfsUtil;
 import org.apache.commons.lang.StringUtils;

@@ -1,4 +1,4 @@
-package com.sunvalley.hadoop.VO;
+package com.sunvalley.hadoop.vo;
 
 import java.io.Serializable;
 

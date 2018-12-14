@@ -1,8 +1,7 @@
 package com.sunvalley.hadoop.reduce.controller;
 
-import com.sunvalley.hadoop.VO.BaseReturnVO;
+import com.sunvalley.hadoop.vo.BaseReturnVO;
 import com.sunvalley.hadoop.reduce.service.MapReduceService;
-import com.sunvalley.hadoop.util.HdfsUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

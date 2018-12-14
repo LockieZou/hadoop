@@ -1,4 +1,4 @@
-package com.sunvalley.hadoop.VO;
+package com.sunvalley.hadoop.vo;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

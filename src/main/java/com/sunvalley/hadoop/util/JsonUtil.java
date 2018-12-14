@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sunvalley.hadoop.VO.ApiMsgEnum;
-import com.sunvalley.hadoop.VO.BaseReturnVO;
+import com.sunvalley.hadoop.vo.ApiMsgEnum;
+import com.sunvalley.hadoop.vo.BaseReturnVO;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
