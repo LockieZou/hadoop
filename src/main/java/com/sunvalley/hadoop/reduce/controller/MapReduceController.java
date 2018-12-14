@@ -38,6 +38,22 @@ public class MapReduceController {
     }
 
     /**
+     * 单词统计
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/newWordCount")
+    public BaseReturnVO newWordCount(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.newWordCount(jobName, inputPath);
+        return new BaseReturnVO("单词统计成功");
+    }
+
+    /**
      * 一年最高气温统计
      * @param jobName
      * @param inputPath

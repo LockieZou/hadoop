@@ -1,16 +1,21 @@
 package com.sunvalley.hadoop.util;
 
 import com.sunvalley.hadoop.reduce.mapper.WeatherMap;
+import com.sunvalley.hadoop.reduce.mapper.WordCount;
 import com.sunvalley.hadoop.reduce.mapper.WordCountMap;
 import com.sunvalley.hadoop.reduce.reducer.WeatherReduce;
 import com.sunvalley.hadoop.reduce.reducer.WordCountReduce;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -46,17 +51,40 @@ public class ReduceJobsUtils {
      * @param jobName
      * @return
      */
-    public static JobConf getWordCountJobsConf(String jobName) throws IOException {
-        JobConf jobConf = new JobConf(getConfiguration());
-        jobConf.setJobName(jobName);
-        jobConf.setOutputKeyClass(Text.class);
-        jobConf.setOutputValueClass(LongWritable.class);
-        jobConf.setMapperClass(WordCountMap.class);
-        jobConf.setCombinerClass(WordCountReduce.class);
-        jobConf.setReducerClass(WordCountReduce.class);
-        jobConf.setInputFormat(TextInputFormat.class);
-        jobConf.setOutputFormat(TextOutputFormat.class);
-        return jobConf;
+    public static void getWordCountJobsConf(String jobName, String inputPath, String outputPath) throws IOException , ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration(getConfiguration());
+        Job job = Job.getInstance(conf, jobName);
+        job.setMapperClass(WordCountMap.class);
+        job.setCombinerClass(WordCountReduce.class);
+        job.setReducerClass(WordCountReduce.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(inputPath));
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * 单词统计
+     * @param jobName
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void wordCount(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration(getConfiguration());
+        Job job = Job.getInstance(conf, jobName);
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(WordCount.TokenizerMapper.class);
+        job.setCombinerClass(WordCount.IntSumReducer.class);
+        job.setReducerClass(WordCount.IntSumReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(inputPath));
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        job.waitForCompletion(true);
+//        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 
     /**

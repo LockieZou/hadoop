@@ -1,6 +1,5 @@
 package com.sunvalley.hadoop.reduce.service;
 
-import com.sunvalley.hadoop.util.DateUtil;
 import com.sunvalley.hadoop.util.HdfsUtil;
 import com.sunvalley.hadoop.util.ReduceJobsUtils;
 import org.apache.commons.lang.StringUtils;
@@ -11,8 +10,6 @@ import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * 类或方法的功能描述 : 单词统计
@@ -24,8 +21,9 @@ import java.util.UUID;
 public class MapReduceService {
     // 默认reduce输出目录
     private static final String OUTPUT_PATH = "/output";
+
     /**
-     * 单词统计
+     * 单词统计，统计某个单词出现的次数
      * @param jobName
      * @param inputPath
      * @throws Exception
@@ -39,10 +37,25 @@ public class MapReduceService {
         if (HdfsUtil.existFile(outputPath)) {
             HdfsUtil.deleteFile(outputPath);
         }
-        JobConf jobConf = ReduceJobsUtils.getWordCountJobsConf(jobName);
-        FileInputFormat.setInputPaths(jobConf, new Path(inputPath));
-        FileOutputFormat.setOutputPath(jobConf, new Path(outputPath));
-        JobClient.runJob(jobConf);
+        ReduceJobsUtils.getWordCountJobsConf(jobName, inputPath, outputPath);
+    }
+
+    /**
+     * 单词统计,统计所有分词出现的次数
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void newWordCount(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job,如果输出路径存在则删除，保证每次都是最新的
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.wordCount(jobName, inputPath, outputPath);
     }
 
     /**
