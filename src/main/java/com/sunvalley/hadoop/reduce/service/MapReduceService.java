@@ -78,5 +78,41 @@ public class MapReduceService {
         FileOutputFormat.setOutputPath(jobConf, new Path(outputPath));
         JobClient.runJob(jobConf);
     }
-} 
+
+    /**
+     * 员工统计,对象序列化
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void staff(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.staff(jobName, inputPath, outputPath);
+    }
+
+    /**
+     * 员工统计，带排序的对象序列化
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void sort(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.sort(jobName, inputPath, outputPath);
+    }
+}
 

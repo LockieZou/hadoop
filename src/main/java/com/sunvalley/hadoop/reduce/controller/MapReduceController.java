@@ -66,5 +66,37 @@ public class MapReduceController {
         mapReduceService.weather(jobName, inputPath);
         return new BaseReturnVO("温度统计成功");
     }
-} 
+
+    /**
+     * 员工统计,对象序列化
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/staff")
+    public BaseReturnVO staff(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.staff(jobName, inputPath);
+        return new BaseReturnVO("员工统计成功");
+    }
+
+    /**
+     * 员工统计,带排序的对象序列化
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/sort")
+    public BaseReturnVO sort(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.sort(jobName, inputPath);
+        return new BaseReturnVO("员工统计排序成功");
+    }
+}
 
