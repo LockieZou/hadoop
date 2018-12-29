@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * 类或方法的功能描述 : hadoop中的分区，是在mapper结束后的reducer中，所以下面的代码是
- * 在reducer时运行的，我们对不同的省份进行规则划分，比如说江西就是对应的0分区
+ * 在reducer时运行的，我们对不同的省份进行规则划分，比如说江西就是对应的1分区
  *
  * @author: logan.zou
  * @date: 2018-12-17 16:04

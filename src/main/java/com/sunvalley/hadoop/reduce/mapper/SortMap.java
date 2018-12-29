@@ -20,7 +20,7 @@ public class SortMap extends Mapper<LongWritable,Text,SortModel,Text> {
     private Text text = new Text();
 
     /**
-     * 文件内容格式: 张三    2980
+     * 读取sort.txt 内容格式: 张三    2980
      * @param key
      * @param value
      * @param context

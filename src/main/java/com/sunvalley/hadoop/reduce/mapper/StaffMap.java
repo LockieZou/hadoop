@@ -17,7 +17,7 @@ import java.io.IOException;
 public class StaffMap extends Mapper<LongWritable, Text, Text, StaffModel> {
 
     /**
-     * 文件内容格式： 张三    江西    打车    200
+     * 读取staff.txt 内容格式： 张三    江西    打车    200
      * @param key
      * @param value
      * @param context

@@ -14,6 +14,15 @@ import java.io.IOException;
  * @date: 2018-12-17 14:25
  */
 public class StaffReduce extends Reducer<Text, StaffModel, Text, StaffModel> {
+
+    /**
+     * 读取 staffMap 的输出内容 内容格式  username StaffModel
+     * @param key
+     * @param values
+     * @param context
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Override
     protected void reduce(Text key, Iterable<StaffModel> values, Context context) throws IOException, InterruptedException {
         int money = 0;

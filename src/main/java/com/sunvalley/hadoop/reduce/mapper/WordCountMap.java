@@ -23,7 +23,7 @@ public class WordCountMap extends Mapper<Object, Text, Text, IntWritable> {
     private Text word = new Text();
 
     /**
-     *
+     * 读取 sgyy.txt或者dpcq.txt 内容格式为小说内容
      * @param key 默认情况下，是mapreduce所读取到的一行文本的起始偏移量
      * @param value 默认情况下，是mapreduce所读取到的一行文本的内容，hadoop中的序列化类型为Text
      * @param context 是用户自定义逻辑处理完成后输出的KEY，在此处是单词，String

@@ -14,6 +14,7 @@ import java.io.IOException;
  */
 public class SortReduce extends Reducer<SortModel, Text, Text, SortModel> {
     /**
+     * 读取 sortMap 输出内容 内容格式 sortModel name
      *  因为在这之前已经是汇总的结果了，所以这里直接输出就行了
      * @param key
      * @param values
