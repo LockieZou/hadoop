@@ -1,14 +1,15 @@
 package com.sunvalley.hadoop.util;
 
+import com.sunvalley.hadoop.reduce.bean.GroupOrderComparator;
+import com.sunvalley.hadoop.reduce.bean.StaffProvincePartitioner;
 import com.sunvalley.hadoop.reduce.mapper.*;
-import com.sunvalley.hadoop.reduce.model.SortModel;
-import com.sunvalley.hadoop.reduce.model.StaffModel;
-import com.sunvalley.hadoop.reduce.model.StaffProvincePartitioner;
+import com.sunvalley.hadoop.reduce.model.*;
 import com.sunvalley.hadoop.reduce.reducer.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TextInputFormat;
@@ -44,6 +45,10 @@ public class ReduceJobsUtils {
         Configuration configuration = new Configuration();
         configuration.set("fs.defaultFS", hdfsPath);
         configuration.set("mapred.job.tracker", hdfsPath);
+        // 运行在yarn的集群模式
+//        configuration.set("mapreduce.framework.name", "yarn");
+        // 这个配置是让main方法寻找该机器的mr环境
+//        configuration.set("yarn.resourcemanmager.hostname", "node1");
         return configuration;
     }
 
@@ -213,6 +218,176 @@ public class ReduceJobsUtils {
         FileInputFormat.setInputPaths(job,new Path(inputPath));
         FileOutputFormat.setOutputPath(job,new Path(outputPath));
 
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * mapreduce 表join
+     * @param jobName
+     * @param inputPath
+     * @param outputPath
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void join(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration config = getConfiguration();
+        Job job = Job.getInstance(config, jobName);
+        // 设置jar中的启动类，可以根据这个类找到相应的jar包
+        job.setJarByClass(OrderInfo.class);
+
+        job.setMapperClass(JoinMapper.class);
+        job.setReducerClass(JoinReduce.class);
+
+        // 设置Mapper的输出
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(OrderInfo.class);
+
+        // 设置reduce的输出
+        job.setOutputKeyClass(OrderInfo.class);
+        job.setOutputValueClass(NullWritable.class);
+
+//        job.setInputFormatClass(LitterFileInputFormat.class);
+//        LitterFileInputFormat.addInputPath(job, new Path(inputPath));
+
+        // 指定输入输出文件的位置
+        FileInputFormat.setInputPaths(job,new Path(inputPath));
+        FileOutputFormat.setOutputPath(job,new Path(outputPath));
+
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * 获取共同好友
+     * @param jobName
+     * @param inputPath
+     * @param outputPath
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void friends1(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration config = getConfiguration();
+        Job job = Job.getInstance(config, jobName);
+        // 设置jar中的启动类，可以根据这个类找到相应的jar包
+        job.setJarByClass(FriendsMapper1.class);
+
+        job.setMapperClass(FriendsMapper1.class);
+        job.setReducerClass(FriendsReduce1.class);
+
+        // 设置Mapper的输出
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(Text.class);
+
+        // 设置reduce的输出
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        // 指定输入输出文件的位置
+        FileInputFormat.setInputPaths(job,new Path(inputPath));
+        FileOutputFormat.setOutputPath(job,new Path(outputPath));
+
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * 计算共同好友
+     * @param jobName
+     * @param inputPath
+     * @param outputPath
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void friends2(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration config = getConfiguration();
+        Job job = Job.getInstance(config, jobName);
+        // 设置jar中的启动类，可以根据这个类找到相应的jar包
+        job.setJarByClass(FriendsMapper2.class);
+
+        job.setMapperClass(FriendsMapper2.class);
+        job.setReducerClass(FriendsReduce2.class);
+
+        // 设置Mapper的输出
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(Text.class);
+
+        // 设置reduce的输出
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        // 指定输入输出文件的位置
+        FileInputFormat.setInputPaths(job,new Path(inputPath));
+        FileOutputFormat.setOutputPath(job,new Path(outputPath));
+
+        job.waitForCompletion(true);
+    }
+
+
+    /**
+     * 分组统计
+     * @param jobName
+     * @param inputPath
+     * @param outputPath
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void groupOrder(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration config = getConfiguration();
+        Job job = Job.getInstance(config, jobName);
+        // 设置jar中的启动类，可以根据这个类找到相应的jar包
+        job.setJarByClass(GroupOrder.class);
+
+        job.setMapperClass(GroupOrderMapper.class);
+        job.setReducerClass(GroupOrderReduce.class);
+
+        // 设置Mapper的输出
+        job.setMapOutputKeyClass(GroupOrder.class);
+        job.setMapOutputValueClass(NullWritable.class);
+
+        // 设置reduce的输出
+        job.setOutputKeyClass(GroupOrder.class);
+        job.setOutputValueClass(NullWritable.class);
+
+        // 指定自定义的Groupingcomparator类
+        job.setGroupingComparatorClass(GroupOrderComparator.class);
+
+        // 指定输入输出文件的位置
+        FileInputFormat.setInputPaths(job,new Path(inputPath));
+        FileOutputFormat.setOutputPath(job,new Path(outputPath));
+
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * 带计数器的单词统计
+     * @param jobName
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void counter(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = getConfiguration();
+        Job job = Job.getInstance(conf, jobName);
+        job.setJarByClass(WordCount.class);
+
+        // 指定Mapper的类
+        job.setMapperClass(CounterMapper.class);
+        job.setCombinerClass(WordCountReduce.class);
+        // 指定reduce的类
+        job.setReducerClass(WordCountReduce.class);
+
+        // 设置Mapper输出的类型
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        // 指定输入文件的位置
+        FileInputFormat.addInputPath(job, new Path(inputPath));
+        // 指定输入文件的位置
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        // 将job中的参数，提交到yarn中运行
         job.waitForCompletion(true);
     }
 

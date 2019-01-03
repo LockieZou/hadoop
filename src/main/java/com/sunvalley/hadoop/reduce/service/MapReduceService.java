@@ -114,5 +114,95 @@ public class MapReduceService {
         }
         ReduceJobsUtils.sort(jobName, inputPath, outputPath);
     }
+
+    /**
+     * mapreduce 表join操作
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void join(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.join(jobName, inputPath, outputPath);
+    }
+
+    /**
+     * mapreduce 获取共同好友
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void friends1(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.friends1(jobName, inputPath, outputPath);
+    }
+
+    /**
+     * mapreduce 计算共同好友
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void friends2(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.friends2(jobName, inputPath, outputPath);
+    }
+
+    /**
+     * mapreduce 分组统计
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void groupOrder(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.groupOrder(jobName, inputPath, outputPath);
+    }
+
+    /**
+     * mapreduce 带计数器的单词统计
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void counter(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.counter(jobName, inputPath, outputPath);
+    }
 }
 

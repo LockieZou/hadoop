@@ -98,5 +98,85 @@ public class MapReduceController {
         mapReduceService.sort(jobName, inputPath);
         return new BaseReturnVO("员工统计排序成功");
     }
+
+    /**
+     * mapreduce 表join操作
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/join")
+    public BaseReturnVO join(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.join(jobName, inputPath);
+        return new BaseReturnVO("表join操作成功");
+    }
+
+    /**
+     * mapreduce 获取共同好友
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/friends1")
+    public BaseReturnVO friends1(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.friends1(jobName, inputPath);
+        return new BaseReturnVO("获取共同好友成功");
+    }
+
+    /**
+     * mapreduce 计算共同好友， input 为friends1的输出目录/output/friends1/part-r-0000
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/friends2")
+    public BaseReturnVO friends2(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.friends2(jobName, inputPath);
+        return new BaseReturnVO("计算共同好友成功");
+    }
+
+    /**
+     * mapreduce 分组统计
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/groupOrder")
+    public BaseReturnVO groupOrder(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.groupOrder(jobName, inputPath);
+        return new BaseReturnVO("分组统计成功");
+    }
+
+    /**
+     * mapreduce 带计数器的单词统计
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/counter")
+    public BaseReturnVO counter(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.counter(jobName, inputPath);
+        return new BaseReturnVO("计数器统计成功");
+    }
 }
 

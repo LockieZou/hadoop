@@ -1,5 +1,6 @@
-package com.sunvalley.hadoop.reduce.model;
+package com.sunvalley.hadoop.reduce.bean;
 
+import com.sunvalley.hadoop.reduce.model.StaffModel;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
