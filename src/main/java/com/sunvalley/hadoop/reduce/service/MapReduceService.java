@@ -204,5 +204,23 @@ public class MapReduceService {
         }
         ReduceJobsUtils.counter(jobName, inputPath, outputPath);
     }
+
+    /**
+     * mapreduce 明星微博统计
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void weibo(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.weibo(jobName, inputPath, outputPath);
+    }
 }
 

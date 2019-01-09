@@ -16,6 +16,10 @@
     
 博客地址： [java代码操作hdfs](https://blog.csdn.net/zxl646801924/article/details/84615604)  
 [java代码操作mapReduce](https://blog.csdn.net/zxl646801924/article/details/85005506)  
+  
+    
+  
+统计明星微博粉丝数、关注数参考博客 ![统计明星微博](https://www.cnblogs.com/zlslch/p/6164435.html)  
 未完待续.... 
 
 

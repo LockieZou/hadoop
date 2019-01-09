@@ -2,6 +2,7 @@ package com.sunvalley.hadoop.util;
 
 import com.sunvalley.hadoop.reduce.bean.GroupOrderComparator;
 import com.sunvalley.hadoop.reduce.bean.StaffProvincePartitioner;
+import com.sunvalley.hadoop.reduce.bean.WeiboInputFormat;
 import com.sunvalley.hadoop.reduce.mapper.*;
 import com.sunvalley.hadoop.reduce.model.*;
 import com.sunvalley.hadoop.reduce.reducer.*;
@@ -18,6 +19,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -153,15 +155,17 @@ public class ReduceJobsUtils {
         job.setMapperClass(StaffMap.class);
         job.setReducerClass(StaffReduce.class);
 
+        /** 分区 **/
         // 指定数据分区规则，不是必须要的，根据业务需求分区，如果设置了reduce根据设置的规则输出成很多个文件，默认是一个。
         job.setPartitionerClass(StaffProvincePartitioner.class);
         // 设置相应的reducer数量，这个数量要与分区的大最数量一致
         job.setNumReduceTasks(7);
 
-        // 设置Mapper输出的key类型
-        job.setMapOutputKeyClass(Text.class);
-        // 设置Mapper输出的value类型
-        job.setMapOutputValueClass(StaffModel.class);
+        //一般情况下mapper和reducer的输出的数据类型是一样的，所以我们用上面两条命令就行，如果不一样，我们就可以用下面两条命令单独指定mapper的输出key、value的数据类型
+//        // 设置Mapper输出的key类型
+//        job.setMapOutputKeyClass(Text.class);
+//        // 设置Mapper输出的value类型
+//        job.setMapOutputValueClass(StaffModel.class);
         // 设置reduce输出的key类型
         job.setOutputKeyClass(Text.class);
         // 设置reduce输出的value类型
@@ -199,6 +203,7 @@ public class ReduceJobsUtils {
         job.setMapperClass(SortMap.class);
         job.setReducerClass(SortReduce.class);
 
+        //一般情况下mapper和reducer的输出的数据类型是一样的，所以我们用上面两条命令就行，如果不一样，我们就可以用下面两条命令单独指定mapper的输出key、value的数据类型
         // 设置Mapper的输出
         job.setMapOutputKeyClass(SortModel.class);
         job.setMapOutputValueClass(Text.class);
@@ -247,9 +252,6 @@ public class ReduceJobsUtils {
         job.setOutputKeyClass(OrderInfo.class);
         job.setOutputValueClass(NullWritable.class);
 
-//        job.setInputFormatClass(LitterFileInputFormat.class);
-//        LitterFileInputFormat.addInputPath(job, new Path(inputPath));
-
         // 指定输入输出文件的位置
         FileInputFormat.setInputPaths(job,new Path(inputPath));
         FileOutputFormat.setOutputPath(job,new Path(outputPath));
@@ -275,9 +277,10 @@ public class ReduceJobsUtils {
         job.setMapperClass(FriendsMapper1.class);
         job.setReducerClass(FriendsReduce1.class);
 
+        //一般情况下mapper和reducer的输出的数据类型是一样的，所以我们用上面两条命令就行，如果不一样，我们就可以用下面两条命令单独指定mapper的输出key、value的数据类型
         // 设置Mapper的输出
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(Text.class);
+//        job.setMapOutputKeyClass(Text.class);
+//        job.setMapOutputValueClass(Text.class);
 
         // 设置reduce的输出
         job.setOutputKeyClass(Text.class);
@@ -308,9 +311,9 @@ public class ReduceJobsUtils {
         job.setMapperClass(FriendsMapper2.class);
         job.setReducerClass(FriendsReduce2.class);
 
-        // 设置Mapper的输出
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(Text.class);
+        // 设置Mapper的输出,mapper输出跟reduce输出一样是可以省略写mapper输出
+//        job.setMapOutputKeyClass(Text.class);
+//        job.setMapOutputValueClass(Text.class);
 
         // 设置reduce的输出
         job.setOutputKeyClass(Text.class);
@@ -343,8 +346,8 @@ public class ReduceJobsUtils {
         job.setReducerClass(GroupOrderReduce.class);
 
         // 设置Mapper的输出
-        job.setMapOutputKeyClass(GroupOrder.class);
-        job.setMapOutputValueClass(NullWritable.class);
+//        job.setMapOutputKeyClass(GroupOrder.class);
+//        job.setMapOutputValueClass(NullWritable.class);
 
         // 设置reduce的输出
         job.setOutputKeyClass(GroupOrder.class);
@@ -387,6 +390,49 @@ public class ReduceJobsUtils {
         FileInputFormat.addInputPath(job, new Path(inputPath));
         // 指定输入文件的位置
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        // 将job中的参数，提交到yarn中运行
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * 明星微博统计
+     * @param jobName
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void weibo(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = getConfiguration();
+        Job job = Job.getInstance(conf, jobName);
+        job.setJarByClass(Weibo.class);
+
+        // 指定Mapper的类
+        job.setMapperClass(WeiboMapper.class);
+        // 指定reduce的类
+        job.setReducerClass(WeiboReduce.class);
+
+        // 设置Mapper的输出
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(Text.class);
+
+        // 设置Mapper输出的类型
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        // 指定输入文件的位置
+        FileInputFormat.addInputPath(job, new Path(inputPath));
+        // 指定输入文件的位置
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+
+        /**
+         * 自定义输入输出格式
+         */
+        job.setInputFormatClass(WeiboInputFormat.class);
+        MultipleOutputs.addNamedOutput(job, "friends", org.apache.hadoop.mapreduce.lib.output.TextOutputFormat.class,Text.class, IntWritable.class);
+        MultipleOutputs.addNamedOutput(job, "followers", org.apache.hadoop.mapreduce.lib.output.TextOutputFormat.class,Text.class, IntWritable.class);
+        MultipleOutputs.addNamedOutput(job, "num", org.apache.hadoop.mapreduce.lib.output.TextOutputFormat.class,Text.class, IntWritable.class);
+
         // 将job中的参数，提交到yarn中运行
         job.waitForCompletion(true);
     }
