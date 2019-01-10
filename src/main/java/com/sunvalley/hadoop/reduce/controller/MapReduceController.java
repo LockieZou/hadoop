@@ -194,5 +194,21 @@ public class MapReduceController {
         mapReduceService.weibo(jobName, inputPath);
         return new BaseReturnVO("明星微博统计成功");
     }
+
+    /**
+     * mapreduce 明星微博搜索指数分析
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/weibo2")
+    public BaseReturnVO weibo2(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.weibo2(jobName, inputPath);
+        return new BaseReturnVO("明星微博指数分析成功");
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.sunvalley.hadoop.util;
 
+import com.sunvalley.hadoop.mapreduce.SearchStar;
 import com.sunvalley.hadoop.reduce.bean.GroupOrderComparator;
 import com.sunvalley.hadoop.reduce.bean.StaffProvincePartitioner;
 import com.sunvalley.hadoop.reduce.bean.WeiboInputFormat;
@@ -432,6 +433,48 @@ public class ReduceJobsUtils {
         MultipleOutputs.addNamedOutput(job, "friends", org.apache.hadoop.mapreduce.lib.output.TextOutputFormat.class,Text.class, IntWritable.class);
         MultipleOutputs.addNamedOutput(job, "followers", org.apache.hadoop.mapreduce.lib.output.TextOutputFormat.class,Text.class, IntWritable.class);
         MultipleOutputs.addNamedOutput(job, "num", org.apache.hadoop.mapreduce.lib.output.TextOutputFormat.class,Text.class, IntWritable.class);
+
+        // 将job中的参数，提交到yarn中运行
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * 明星微博搜索指数分析
+     * @param jobName
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void weibo2(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = getConfiguration();
+        Job job = Job.getInstance(conf, jobName);
+        job.setJarByClass(SearchStar.class);
+
+        // 设置reduce文件拆分个数
+        job.setNumReduceTasks(2);
+
+        // 设置mapper信息
+        job.setMapperClass(SearchStar.SearchStarMapper.class);
+        // 设置分组partitioner信息
+        job.setPartitionerClass(SearchStar.SearchStarPartitioner.class);
+        // 设置排序combiner信息
+        job.setCombinerClass(SearchStar.SearchStarCombiner.class);
+        // 设置reduce信息
+        job.setReducerClass(SearchStar.SearchStarReduce.class);
+
+        // 设置Mapper的输出
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(Text.class);
+
+        // 设置Mapper输出的类型
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        // 指定输入文件的位置
+        FileInputFormat.addInputPath(job, new Path(inputPath));
+        // 指定输入文件的位置
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
         // 将job中的参数，提交到yarn中运行
         job.waitForCompletion(true);
