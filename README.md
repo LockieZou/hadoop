@@ -19,12 +19,13 @@
   
     
   
-统计明星微博粉丝数、关注数参考博客 ![统计明星微博](https://www.cnblogs.com/zlslch/p/6164435.html)  
+统计明星微博粉丝数、关注数参考博客 [统计明星微博](https://www.cnblogs.com/zlslch/p/6164435.html)  
   
   
   
 为了方便测试采用rpc方式调用mapreduce：  
 统计微博明星粉丝数，关注数，微博数，分文件输出。访问 localhost:9000/hadoop/reduce/weibo  
+![hdfs文件系统](https://github.com/LockieZou/hadoop/blob/master/20190111121036.jpg)  
 未完待续.... 
 
 

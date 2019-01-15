@@ -240,5 +240,23 @@ public class MapReduceService {
         }
         ReduceJobsUtils.weibo2(jobName, inputPath, outputPath);
     }
+
+    /**
+     * mapreduce 分组统计、排序
+     * @param jobName
+     * @param inputPath
+     * @throws Exception
+     */
+    public void groupSort(String jobName, String inputPath) throws Exception {
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return;
+        }
+        // 输出目录 = output/当前Job
+        String outputPath = OUTPUT_PATH + "/" + jobName;
+        if (HdfsUtil.existFile(outputPath)) {
+            HdfsUtil.deleteFile(outputPath);
+        }
+        ReduceJobsUtils.groupSort(jobName, inputPath, outputPath);
+    }
 }
 

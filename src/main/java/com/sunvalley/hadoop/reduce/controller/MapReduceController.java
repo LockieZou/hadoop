@@ -210,5 +210,21 @@ public class MapReduceController {
         mapReduceService.weibo2(jobName, inputPath);
         return new BaseReturnVO("明星微博指数分析成功");
     }
+
+    /**
+     * mapreduce 分组统计、排序
+     * @param jobName
+     * @param inputPath
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/groupSort")
+    public BaseReturnVO groupSort(@RequestParam("jobName") String jobName, @RequestParam("inputPath") String inputPath) throws  Exception{
+        if (StringUtils.isEmpty(jobName) || StringUtils.isEmpty(inputPath)) {
+            return new BaseReturnVO("请求参数为空");
+        }
+        mapReduceService.groupSort(jobName, inputPath);
+        return new BaseReturnVO("分组统计、排序成功");
+    }
 }
 

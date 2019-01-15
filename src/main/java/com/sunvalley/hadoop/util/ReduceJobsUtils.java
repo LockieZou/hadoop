@@ -1,5 +1,6 @@
 package com.sunvalley.hadoop.util;
 
+import com.sunvalley.hadoop.mapreduce.GroupSort;
 import com.sunvalley.hadoop.mapreduce.SearchStar;
 import com.sunvalley.hadoop.reduce.bean.GroupOrderComparator;
 import com.sunvalley.hadoop.reduce.bean.StaffProvincePartitioner;
@@ -8,6 +9,7 @@ import com.sunvalley.hadoop.reduce.mapper.*;
 import com.sunvalley.hadoop.reduce.model.*;
 import com.sunvalley.hadoop.reduce.reducer.*;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -477,6 +479,45 @@ public class ReduceJobsUtils {
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
         // 将job中的参数，提交到yarn中运行
+        job.waitForCompletion(true);
+    }
+
+    /**
+     * 分组统计、排序
+     * @param jobName
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     */
+    public static void groupSort(String jobName, String inputPath, String outputPath) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = getConfiguration();
+        Job job = Job.getInstance(conf, jobName);
+        job.setJarByClass(GroupSort.class);
+
+        // 设置reduce文件拆分个数
+//        job.setNumReduceTasks(3);
+        // 设置mapper信息
+        job.setMapperClass(GroupSort.GroupSortMapper.class);
+        job.setPartitionerClass(GroupSort.GroupSortPartitioner.class);
+        job.setGroupingComparatorClass(GroupSort.GroupSortComparator.class);
+        // 设置reduce信息
+        job.setReducerClass(GroupSort.GroupSortReduce.class);
+
+        // 设置Mapper的输出
+        job.setMapOutputKeyClass(GroupSortModel.class);
+        job.setMapOutputValueClass(IntWritable.class);
+
+        // 设置mapper和reduce的输出格式，如果相同则只需设置一个
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        // 指定输入文件的位置
+        FileInputFormat.addInputPath(job, new Path(inputPath));
+        // 指定输入文件的位置
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+
+        // 运行
         job.waitForCompletion(true);
     }
 
